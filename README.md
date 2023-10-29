@@ -5,22 +5,23 @@
 
 
 ## ⚡️ Requirements
-```
-// vim editor
+``` ShellSession
+# vim editor
 scoop install neovim
 
-// search engine
+# search engine
 scoop install ripgrep
 
-// rename tool
+# rename tool
 scoop install sed
 
-// language server 
+# language server 
 scoop install clangd  
 scoop install lua-language-server 
 ```
 
 ## 📦 Installation
-``` 
+``` ShellSession
+# clone repo
 git clone https://github.com/Jovi4771/nvim.git $env:LOCALAPPDATA\nvim
 ```
