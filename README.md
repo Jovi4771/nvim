@@ -1,17 +1,26 @@
 # nvim
 
+## ✨ Features
+
+
+
 ## ⚡️ Requirements
-
-<!-- bootstrap:start -->
+```
+// vim editor
 scoop install neovim
-scoop install ripgrep
-scoop install sed
-scoop install clangd              // for LSP
-scoop install lua-language-server // for LSP
-<!-- bootstrap:end -->
 
+// search engine
+scoop install ripgrep
+
+// rename tool
+scoop install sed
+
+// language server 
+scoop install clangd  
+scoop install lua-language-server 
+```
 
 ## 📦 Installation
-<!-- bootstrap:start -->
+``` 
 git clone https://github.com/Jovi4771/nvim.git $env:LOCALAPPDATA\nvim
-<!-- bootstrap:end -->
+```
