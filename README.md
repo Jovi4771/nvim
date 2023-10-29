@@ -1,4 +1,4 @@
-# nvim
+# Jovi's Neovim
 
 ## ✨ Features
 
