@@ -7,12 +7,12 @@ return {
   lazy = false,
 
   init = function()
-    vim.g.my_session_path = "D:\\qiaofei_liu\\nvim\\.cache\\nvim-sessions" -- TODO: userdefine
-    vim.fn.mkdir(vim.g.my_session_path, 'p')
+    local sessionpath = vim.fn.stdpath("data") .. "/.cache/nvim-sessions"
+    vim.fn.mkdir(sessionpath, 'p')
   end,
 
   opts = {
-    session_dir  = "D:\\qiaofei_liu\\nvim\\.cache\\nvim-sessions", -- TODO: userdefine, must same as vim.g.my_session_path
+    session_dir  = vim.fn.stdpath("data") .. "/.cache/nvim-sessions",
     silent       = false,
     load_silent  = true,
     debug        = false,

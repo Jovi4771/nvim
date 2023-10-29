@@ -33,7 +33,7 @@ return
       dashboard.button('o', '📚   Open Project   ', ':lua TelescopeSessionBrowser()<CR>'),
       dashboard.button('f', '🔍   Find File      ', ':lua TelescopeFileBrowser()<CR>'),
       dashboard.button('s', '🛠   Settings       ', ':lua MyVIMRC()<CR>'),
-      dashboard.button('l', '🖨   LSP Server     ', ':Mason<CR>'),
+      dashboard.button('l', '🖨   LSP Server     ', ''), -- :Mason<CR>
       dashboard.button('i', '📥   Plugins Install', ':Lazy<CR>'),
       dashboard.button('u', '🔼   Plugins Update ', ':Lazy<CR>'),
       dashboard.button('q', '🚪   Quit           ', ':qa<CR>'),
