@@ -61,7 +61,7 @@ return {
             }
           },
 
-          file_ignore_patterns = { ".git/", "dist/", ".metadata/", ".settings/", "*.exe" },
+          file_ignore_patterns = {".git/", "dist/", ".metadata/", ".settings/", "*.exe", "compile_commands.json"},
 
           extensions = {
             -- Your extension configuration goes here:

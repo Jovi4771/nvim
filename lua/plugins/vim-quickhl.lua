@@ -2,7 +2,7 @@ return {
   -- 多重 highlight
   {
     't9md/vim-quickhl',
-    event = VeryLazy,
+    event = "VeryLazy",
 
     keys = {
       {

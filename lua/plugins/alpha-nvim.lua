@@ -49,7 +49,7 @@ return
       -- quote
       local fortune = require("alpha.fortune")()
       vim.g.my_quote = table.concat(fortune, '\n')
-      vim.fn.setreg('*', vim.g.my_quote) -- copy to clipboard
+      --vim.fn.setreg('*', vim.g.my_quote) -- copy to clipboard
 
       return plugins_text .. '\n' .. vim.g.my_quote
     end

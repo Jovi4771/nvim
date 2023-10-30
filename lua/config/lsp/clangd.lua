@@ -46,19 +46,6 @@ function my_split(inputstr, sep)
   return t
 end
 
-function dump(o)
-   if type(o) == 'table' then
-      local s = '{ '
-      for k,v in pairs(o) do
-         if type(k) ~= 'number' then k = '"'..k..'"' end
-         s = s .. '['..k..'] = ' .. dump(v) .. ','
-      end
-      return s .. '} '
-   else
-      return tostring(o)
-   end
-end
-
 local function parse_source(root)
   local src = {}
   local inc_dir = {}
@@ -99,8 +86,6 @@ local function parse_source(root)
       end
     end
   end
-
-  print(dump(inc_dir))
 
   setmetatable(inc_dir, table_ext_mt)
   inc_dir = inc_dir:values()

@@ -12,19 +12,19 @@ return {
   -- vim 常用設定
   {
     "tpope/vim-sensible",
-    event = VeryLazy
+    event = "VeryLazy",
   },
 
   -- surround
   {
     "tpope/vim-surround",
-    event = VeryLazy
+    event = "VeryLazy",
   },
 
   -- textobject "a"
   {
     "wellle/targets.vim",
-    event = VeryLazy
+    event = "VeryLazy",
   },
 
   -- 顯示縮排
@@ -41,7 +41,7 @@ return {
   -- C highlight
   {
     "octol/vim-cpp-enhanced-highlight",
-    event = VeryLazy,
+    event = "VeryLazy",
 
     init = function()
       -- Highlight #Define
@@ -61,26 +61,33 @@ return {
   -- auto resize windows
   {
     "justincampbell/vim-eighties",
-    event = VeryLazy
+    event = "VeryLazy",
   },
 
   -- quickfix windows preview
   {
     "kevinhwang91/nvim-bqf",
-    event = VeryLazy
+    event = "VeryLazy",
   },
 
   -- ui patch
   {
     "nvim-lua/plenary.nvim",
-    lazy = true
+    lazy = true,
   },
 
   -- icons
   {
     "nvim-tree/nvim-web-devicons",
-    lazy = true
+    lazy = true,
   },
+
+  -- smoothly scroll
+  --{
+  --  "karb94/neoscroll.nvim",
+  --  event = "VeryLazy",
+  --},
+
 
   -- notify
   {
