@@ -83,10 +83,10 @@ return {
   },
 
   -- smoothly scroll
-  --{
-  --  "karb94/neoscroll.nvim",
-  --  event = "VeryLazy",
-  --},
+  {
+    "psliwka/vim-smoothie",
+    event = "VeryLazy",
+  },
 
 
   -- notify
