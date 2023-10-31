@@ -72,7 +72,7 @@ opt.softtabstop = 4              -- 按下退格時退回多少個空格
 opt.tabstop = 4                  -- 1 tab == 4 spaces
 opt.smartindent = true           -- Autoindent new lines
 opt.autoindent = true            -- 在輸入新行時，自動將游標移動到縮排正確的位置
-cmd([[retab]])                   -- 將已經存在的 Tab 轉為空格
+--cmd([[retab]])                   -- 將已經存在的 Tab 轉為空格
 
 -----------------------------------------------------------
 -- Memory, CPU
