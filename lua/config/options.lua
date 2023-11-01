@@ -9,6 +9,7 @@
 local g   = vim.g       -- Global variables
 local opt = vim.opt     -- Set options (global/buffer/windows-scoped)
 local api = vim.api     --
+local lsp = vim.lsp     --
 local cmd = vim.cmd     --
 local fn  = vim.fn      --
 
@@ -82,6 +83,19 @@ opt.history = 20                 -- Remember N lines in history
 opt.lazyredraw = true            -- Faster scrolling
 opt.synmaxcol = 240              -- Max column for syntax highlight
 opt.updatetime = 250             -- ms to wait for trigger an event
+
+
+-----------------------------------------------------------
+-- LSP
+-----------------------------------------------------------
+-- disable log
+-- Levels by name: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"
+lsp.set_log_level("OFF")
+
+-- Hide all semantic highlights
+for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+  api.nvim_set_hl(0, group, {})
+end
 
 
 
