@@ -63,6 +63,8 @@ return {
 
           file_ignore_patterns = {
             ".git/",
+            ".cache/",
+            ".config/",
             ".metadata/",
             ".settings/",
             "%.mk",
