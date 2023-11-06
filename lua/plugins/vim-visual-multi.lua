@@ -23,6 +23,7 @@ return {
 
     init = function()
       vim.g.VM_leader = "\\"
+      vim.g.VM_case_setting = "sensitive"
     end,
   },
 }
