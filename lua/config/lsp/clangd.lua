@@ -95,18 +95,43 @@ local function parse_source(root)
   return src, inc_dir
 end
 
+local function parse_preprocessor(root)
+  local file = io.open("preprocessor.txt", "r")
+  local defineTable = {}
+
+  if not file then
+    return defineTable
+  end
+
+  for line in file:lines() do
+    table.insert(defineTable, line)
+  end
+  file:close()
+
+  return defineTable
+end
+
 function generate_compile_commands(root)
   root = root or vim.fn.getcwd()
   local src, inc_dir = parse_source(root)
+  local def = parse_preprocessor(root)
 
   local function replace_sep(s)
     return string.gsub(s, '\\', '/')
   end
 
-  local function to_str(t)
+  local function include_to_str(t)
     local f = ''
     for _, v in ipairs(t) do
-      f = f .. '-I \\"' .. replace_sep(v) .. '\\" '
+      f = f .. ' -I \\"' .. replace_sep(v) .. '\\"'
+    end
+    return f
+  end
+
+  local function define_to_str(t)
+    local f = ''
+    for _, v in ipairs(t) do
+      f = f .. ' -D' .. v
     end
     return f
   end
@@ -116,7 +141,7 @@ function generate_compile_commands(root)
     local command = {}
     local new_v = replace_sep(v)
     command['directory'] = replace_sep(root)
-    command['command'] = 'clang -m32 ' .. to_str(inc_dir) .. '\\"' .. new_v .. '\\"'
+    command['command'] = 'clang -m32' .. define_to_str(def) .. include_to_str(inc_dir) .. '\\"' .. new_v .. '\\"'
     command['file'] = new_v
     table.insert(commands, command)
   end
@@ -147,19 +172,19 @@ function generate_compile_commands(root)
   file:close()
 end
 
-function generate_compile_flags(root)
-  root = root or vim.fn.getcwd()
-  local _, inc_dir = parse_source(root)
-
-  local function to_file(t)
-    local f = ''
-    for _, v in ipairs(t) do
-      f = f .. '-I\n' .. v .. sep .. '\n'
-    end
-    return f
-  end
-
-  local file = io.open(root .. sep .. 'compile_flags.txt', 'w+')
-  file:write(to_file(inc_dir))
-  file:close()
-end
+--function generate_compile_flags(root)
+--  root = root or vim.fn.getcwd()
+--  local _, inc_dir = parse_source(root)
+--
+--  local function to_file(t)
+--    local f = ''
+--    for _, v in ipairs(t) do
+--      f = f .. '-I\n' .. v .. sep .. '\n'
+--    end
+--    return f
+--  end
+--
+--  local file = io.open(root .. sep .. 'compile_flags.txt', 'w+')
+--  file:write(to_file(inc_dir))
+--  file:close()
+--end

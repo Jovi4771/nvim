@@ -71,6 +71,7 @@ return {
             "%.d",
             "%.o",
             "%.exe",
+            "%.txt",
             "%.bin",
             "%.project",
             "%.cproject",
