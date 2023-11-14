@@ -167,9 +167,20 @@ function generate_compile_commands(root)
     return f
   end
 
+  -- force cover compile_commands.json
   local file = io.open(root .. sep .. 'compile_commands.json', 'w+')
   file:write(to_file(commands))
   file:close()
+
+  -- generate preprocessor.txt if not exist
+  local file = io.open(root .. sep .. 'preprocessor.txt', 'r')
+  if file then
+    -- skip
+    file:close()
+  else
+    local file = io.open(root .. sep .. 'preprocessor.txt', 'w+')
+    file:close()
+  end
 end
 
 --function generate_compile_flags(root)
