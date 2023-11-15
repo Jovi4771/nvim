@@ -7,7 +7,7 @@ return {
   -- stylua: ignore
   keys = {
     {
-      "<leader>rn", function() require("spectre").open() end, desc = "Replace in files (Spectre)"
+      "<leader>rn", function() require("spectre").open_visual({select_word=true}) end, desc = "Replace in files (Spectre)"
     },
   },
 }
