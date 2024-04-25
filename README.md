@@ -7,7 +7,7 @@
 ## ⚡️ Requirements
 ``` ShellSession
 # vim editor
-scoop install neovim
+scoop install neovim (> 0.9.0)
 
 # search engine
 scoop install ripgrep
