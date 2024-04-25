@@ -18,6 +18,11 @@ scoop install sed
 # language server 
 scoop install clangd  
 scoop install lua-language-server 
+
+# other tool
+scoop install python
+scoop install lua
+
 ```
 
 ## 📦 Installation
