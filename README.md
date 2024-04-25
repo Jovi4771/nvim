@@ -22,6 +22,7 @@ scoop install lua-language-server
 # other tool
 scoop install python
 scoop install lua
+python -m pip install neovim
 
 ```
 
