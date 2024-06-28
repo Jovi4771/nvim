@@ -29,7 +29,14 @@ return {
       -- c, c++
       ----------
       lspconfig.clangd.setup({
-        root_dir = lspconfig.util.root_pattern('compile_commands.json', 'compile_flags.txt', '.root', '.git')
+        root_dir = lspconfig.util.root_pattern('compile_commands.json', 'compile_flags.txt', '.root', '.git'),
+        settings = {
+          diagnostics = {
+            enable = true,
+            cShadow = "none",
+            cppUnusedInclude = "none",
+          },
+        },
       })
     end,
   },
