@@ -109,7 +109,8 @@ end
 local alpha_vim_status_ok, _ = pcall(require, 'alpha')
 local possession_status_ok, _ = pcall(require, 'possession')
 local telescope_status_ok, _ = pcall(require, 'telescope')
-local telescope_file_browser_status_ok, _ = pcall(require, "telescope._extensions.file_browser")
+local telescope_file_browser_status_ok, _ = pcall(require, 'telescope._extensions.file_browser')
+local gut_font_resize_ok, _ = pcall(require, 'gui-font-resize')
 
 -- alpha-nvim
 function AlphaVimQuote()
@@ -118,7 +119,6 @@ function AlphaVimQuote()
     vim.fn.setreg('*', vim.g.my_quote)
   end
 end
-
 
 -- telescope session browser
 function TelescopeSessionBrowser()
@@ -137,11 +137,38 @@ function TelescopeFileBrowser(path)
   end
 end
 
-
 -- lsp generater
 function LspGenCompileCommands()
   generate_compile_commands()
   MyNotify("generating compile_commands.json ...")
+end
+
+-- gui font resize
+function GuiFontResizeUp()
+  if gut_font_resize_ok then
+    vim.cmd("GUIFontSizeUp")
+
+    local _, guifont = pcall(function() return vim.api.nvim_get_option("guifont") end)
+    MyNotify('GUI Font = ' .. guifont)
+  end
+end
+
+function GuiFontResizeDown()
+  if gut_font_resize_ok then
+    vim.cmd("GUIFontSizeDown")
+
+    local _, guifont = pcall(function() return vim.api.nvim_get_option("guifont") end)
+    MyNotify('GUI Font = ' .. guifont)
+  end
+end
+
+function GuiFontResizeReset()
+  if gut_font_resize_ok then
+    vim.cmd("GUIFontSizeSet")
+
+    local _, guifont = pcall(function() return vim.api.nvim_get_option("guifont") end)
+    MyNotify('GUI Font = ' .. guifont)
+  end
 end
 
 

@@ -9,6 +9,36 @@ return {
     },
   },
 
+  -- font
+  {
+    "ktunprasert/gui-font-resize.nvim",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<A-UP>",
+        --":GUIFontSizeUp<CR>",
+        ":lua GuiFontResizeUp()<CR>",
+      },
+
+      {
+        "<A-Down>",
+        --":GUIFontSizeDown<CR>",
+        ":lua GuiFontResizeDown()<CR>",
+      },
+    },
+
+    init = function()
+      require("gui-font-resize").setup({
+        default_size = 12, -- absolute size it will fallback to when :GUIFontSizeSet is not specified
+        change_by = 1, -- step value that will inc/dec the fontsize by
+        bounds = {
+            maximum = 24, -- maximum font size, when you try to set a size bigger than this it will default to max
+            minimum = 8, -- any modification lower than 8 will spring back to 8
+        },
+      })
+    end,
+  },
+
   -- vim 常用設定
   {
     "tpope/vim-sensible",
@@ -26,7 +56,6 @@ return {
     "wellle/targets.vim",
     event = "VeryLazy",
   },
-
 
   -- 顯示縮排
   {
@@ -88,7 +117,6 @@ return {
     "psliwka/vim-smoothie",
     event = "VeryLazy",
   },
-
 
   -- notify
   {
