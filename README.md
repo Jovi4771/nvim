@@ -7,7 +7,7 @@
 ## ⚡️ Requirements
 ``` ShellSession
 # vim editor
-scoop install neovim
+scoop install neovim (> 0.9.0)
 
 # search engine
 scoop install ripgrep
@@ -18,6 +18,12 @@ scoop install sed
 # language server 
 scoop install clangd  
 scoop install lua-language-server 
+
+# other tool
+scoop install python
+scoop install lua
+python -m pip install neovim
+
 ```
 
 ## 📦 Installation
