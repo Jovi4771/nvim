@@ -53,15 +53,15 @@ map('n', '<F2>', ':lua MyVIMRC()<CR>')
 map('n', 'o',  'ko<esc>')
 map('n', 'I', 'i<space><esc>')
 map('n', '<leader>w', '<C-w>')
-map('n', '<C-.>', '<C-w>5>')
-map('n', '<C-,>', '<C-w>5<')
-map('n', '<C-=>', '<C-w>3+')
-map('n', '<C-->', '<C-w>3-')
-if vim.fn.has("win32") then
+map('n', '<A-Left', '<C-w>5>')
+map('n', '<A-Right>', '<C-w>5<')
+map('n', '<A-Up>', '<C-w>3+')
+map('n', '<A-Down>', '<C-w>3-')
+--if vim.fn.has("win32") then
 map('v', '<leader>y', '"*y')
 map('n', '<leader>p', '"*p')
 map('v', '<leader>p', '"*p')
-end
+--end
 map('n', '9y', '"9y')
 map('n', '9p', '"9p')
 --map('n', '0p', '"0p')

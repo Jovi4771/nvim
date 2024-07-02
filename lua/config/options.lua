@@ -17,7 +17,7 @@ local fn  = vim.fn      --
 -- General
 -----------------------------------------------------------
 opt.mouse = 'a'                                    -- Enable mouse support
---opt.clipboard = 'unnamedplus'                    -- Copy/paste to system clipboard
+opt.clipboard = 'unnamedplus'                    -- Copy/paste to system clipboard
 opt.swapfile = false                               -- Don't use swapfile
 opt.completeopt = 'menu,menuone,noinsert,noselect' -- Autocomplete options
 opt.autoread = true                                -- 檔案被修改後自動讀取

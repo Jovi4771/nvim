@@ -9,19 +9,19 @@ return {
     },
   },
 
-  -- font
+  -- font size (gui)
   {
     "ktunprasert/gui-font-resize.nvim",
     event = "VeryLazy",
     keys = {
       {
-        "<A-UP>",
+        "<C-+>",
         --":GUIFontSizeUp<CR>",
         ":lua GuiFontResizeUp()<CR>",
       },
 
       {
-        "<A-Down>",
+        "<C-->",
         --":GUIFontSizeDown<CR>",
         ":lua GuiFontResizeDown()<CR>",
       },
