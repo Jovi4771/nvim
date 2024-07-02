@@ -15,7 +15,7 @@ return {
     event = "VeryLazy",
     keys = {
       {
-        "<C-+>",
+        "<C-=>",
         --":GUIFontSizeUp<CR>",
         ":lua GuiFontResizeUp()<CR>",
       },
