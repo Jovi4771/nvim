@@ -38,6 +38,21 @@ return {
           },
         },
       })
+
+      ----------
+      -- python
+      ----------
+      lspconfig.pyright.setup({
+        settings = {
+          diagnostics = {
+            globals = {
+              'vim',
+              'VeryLazy',
+              'VimEnter',
+            },
+          },
+        },
+      })
     end,
   },
 }
