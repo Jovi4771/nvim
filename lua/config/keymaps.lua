@@ -55,6 +55,8 @@ map('n', 'I', 'i<space><esc>')
 map('n', '<leader>w', '<C-w>')
 map('n', '<A-Right>', '<C-w>5>')
 map('n', '<A-Left>', '<C-w>5<')
+map('n', '<C-.>', '<C-w>5>')
+map('n', '<C-,>', '<C-w>5<')
 map('n', '<A-Up>', '<C-w>3+')
 map('n', '<A-Down>', '<C-w>3-')
 if vim.fn.has("win32") then
