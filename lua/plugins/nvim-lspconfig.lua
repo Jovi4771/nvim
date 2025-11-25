@@ -8,28 +8,18 @@ return {
     --event = {"VimEnter", "BufReadPost", "BufNewFile", "BufWritePre"},
     event = {"VimEnter"},
     init = function()
-      local lspconfig = require("lspconfig")
-
-      ----------
-      -- lua
-      ----------
-      lspconfig.lua_ls.setup({
-        settings = {
-          diagnostics = {
-            globals = {
-              'vim',
-              'VeryLazy',
-              'VimEnter',
-            },
-          },
-        },
-      })
-
       ----------
       -- c, c++
       ----------
-      lspconfig.clangd.setup({
-        root_dir = lspconfig.util.root_pattern('compile_commands.json', 'compile_flags.txt', '.root', '.git'),
+      vim.lsp.enable('clangd')
+      vim.lsp.config('clangd', {
+        cmd = {
+          'clangd', '--background-index', '--compile-commands-dir=build'
+        },
+        --root_dir = util.root_pattern('compile_commands.json', 'compile_flags.txt', '.root', '.git'),
+        root_markers = {
+          'compile_commands.json', 'compile_flags.txt', '.root', '.git'
+        },
         settings = {
           diagnostics = {
             enable = true,
@@ -40,19 +30,27 @@ return {
       })
 
       ----------
+      -- lua
+      ----------
+      vim.lsp.enable('lua_ls')
+
+      ----------
       -- python
       ----------
-      lspconfig.pyright.setup({
-        settings = {
-          diagnostics = {
-            globals = {
-              'vim',
-              'VeryLazy',
-              'VimEnter',
-            },
-          },
-        },
-      })
+      vim.lsp.enable('pyright')
+
+      ----------
+      -- general
+      ----------
+      --vim.lsp.config('*', {
+      --  capabilities = {
+      --    textDocument = {
+      --      semanticTokensProvider = nil,
+      --      codeLensProvider = nil
+      --    }
+      --  }
+      --)
+
     end,
   },
 }

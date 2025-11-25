@@ -16,6 +16,7 @@ return {
       vim.o.laststatus = 0
     end
   end,
+
   opts = function()
     -- status
     vim.o.laststatus = vim.g.lualine_laststatus
@@ -106,9 +107,9 @@ return {
       },
 
       refresh = {                  -- sets how often lualine should refresh it's contents ()
-        statusline = 0,            -- The refresh option sets minimum time that lualine tries
-        tabline    = 0,            -- to maintain between refresh. It's not guarantied if situation
-        winbar     = 0             -- arises that lualine needs to refresh itself before this time
+        statusline = 1000,         -- The refresh option sets minimum time that lualine tries
+        tabline    = 1000,         -- to maintain between refresh. It's not guarantied if situation
+        winbar     = 1000          -- arises that lualine needs to refresh itself before this time
                                    -- it'll do it.
 
                                    -- Also you can force lualine's refresh by calling refresh function

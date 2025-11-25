@@ -66,7 +66,6 @@ map('v', '<leader>p', '"*p')
 end
 map('n', '9y', '"9y')
 map('n', '9p', '"9p')
-map('n', 'p', '"0p')  -- replace p
 map('n', '<C-z>', '<nop>')
 map('n', 'vv', 'viw')
 map('n', '<leader>rr', ':source $MYVIMRC<CR>')
