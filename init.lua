@@ -42,8 +42,6 @@ require("config/autocmds")
 require("config/options")
 require("config/functions")
 require("config/keymaps")
-require("config/lsp/clangd")
-
-
-
+require("utils/clangd")
+require("utils/avante")
 

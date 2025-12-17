@@ -1,0 +1,157 @@
+
+-- lua/plugins/codecompanion.lua
+return {
+  "olimorris/codecompanion.nvim",
+  dependencies = {
+    "nvim-lua/plenary.nvim",
+    "nvim-treesitter/nvim-treesitter",
+  },
+  opts = {
+    -- 全域選項
+    opts = {
+      log_level = "DEBUG",   -- 或 "TRACE"
+      language = "Traditional Chinese",  -- 偏向繁體中文回答
+    },
+
+    --------------------------------------------------------------------------
+    -- Adapters：把你的 vLLM 端點映射為 OpenAI-compatible HTTP adapters
+    --------------------------------------------------------------------------
+    adapters = {
+      http = {
+        -- Qwen2.5-7B-Instruct-AWQ（apply 用途）
+        qwen25_7b_apply = function()
+          return require("codecompanion.adapters").extend("openai", {
+            name = "qwen25_7b_apply",
+            formatted_name = "Qwen2.5-7B-Instruct-AWQ",
+            url = "http://vllm.phison.com/Qwen2.5-7B-Instruct-AWQ/v1/chat/completions",
+            env = { api_key = function() return os.getenv("OPENAI_API_KEY") or "" end },
+            schema = {
+              model = { default = "Qwen2.5-7B-Instruct-AWQ" },
+              temperature = { default = 0.0 },
+            },
+          })
+        end,
+
+        -- Qwen2.5-72B-Instruct-AWQ（chat/edit）
+        qwen25_72b = function()
+          return require("codecompanion.adapters").extend("openai", {
+            name = "qwen25_72b",
+            formatted_name = "Qwen2.5-72B-Instruct-AWQ",
+            url = "http://vllm.phison.com/Qwen2.5-72B-Instruct-AWQ/v1/chat/completions",
+            env = { api_key = function() return os.getenv("OPENAI_API_KEY") or "" end },
+            schema = {
+              model = { default = "Qwen2.5-72B-Instruct-AWQ" },
+            },
+          })
+        end,
+
+        -- gpt-oss-120b（chat/edit + tool_use）
+        gpt_oss_120b = function()
+          return require("codecompanion.adapters").extend("openai", {
+            name = "gpt_oss_120b",
+            formatted_name = "gpt-oss-120b",
+            url = "http://vllm.phison.com/gpt-oss-120b/v1/chat/completions",
+            env = { api_key = function() return os.getenv("OPENAI_API_KEY") or "" end },
+            schema = {
+              model = { default = "gpt-oss-120b" },
+            },
+          })
+        end,
+
+        -- Qwen3-Coder-30B-A3B-Instruct（chat/edit/apply/autocomplete）
+        qwen3_coder_30b = function()
+          return require("codecompanion.adapters").extend("openai", {
+            name = "qwen3_coder_30b",
+            formatted_name = "Qwen3-Coder-30B-A3B-Instruct",
+            url = "http://vllm.phison.com/Qwen3-Coder-30B-A3B-Instruct/v1/chat/completions",
+            env = { api_key = function() return os.getenv("OPENAI_API_KEY") or "" end },
+            schema = {
+              model = { default = "Qwen3-Coder-30B-A3B-Instruct" },
+              temperature = { default = 0.7 },
+              top_p = { default = 0.8 },
+              -- topK 非標準欄位；若端點需要可用 handlers.request.build_parameters 追加
+            },
+          })
+        end,
+      },
+    },
+
+    --------------------------------------------------------------------------
+    -- Strategies：預設聊天與行內編輯使用的模型
+    --------------------------------------------------------------------------
+    strategies = {
+      chat   = { adapter = { name = "qwen3_coder_30b", model = "Qwen3-Coder-30B-A3B-Instruct" } },
+      inline = { adapter = { name = "qwen3_coder_30b", model = "Qwen3-Coder-30B-A3B-Instruct" } },
+    },
+
+    --------------------------------------------------------------------------
+    -- Prompt Library：映射 Continue 的 apply/autocomplete
+    --------------------------------------------------------------------------
+    prompt_library = {
+      -- Apply（合併更新）：依選取更新片段，把變更套回到檔案
+      ["Apply 更新合併"] = {
+        strategy = "inline",
+        description = "依據選取片段作為 <update>，把更新合併進當前檔案（保留註解、只做指定變更）",
+        opts = {
+          short_name = "apply",
+          auto_submit = true,
+          modes = { "v" },  -- 視覺模式選取「更新片段」
+          adapter = { name = "qwen25_7b_apply", model = "Qwen2.5-7B-Instruct-AWQ" },
+        },
+        prompts = {
+          {
+            role = "system",
+            content = [[你是一位協助合併程式碼更新的助理。請以繁體中文回覆。遵守以下規則：
+- <update> 片段中的 // ... existing code ... 表示未變更的上下文，僅變更標記區段。
+- 若 <update> 讓原本被函式/類別/匯入/變數分隔的兩段程式碼變成相鄰，表示那些介於其間的內容應從合併後程式碼中移除。
+- **關鍵：保留原始程式碼中的所有註解、docstring、說明文件，除非 <update> 明確指出要移除。**
+- **關鍵：僅執行 <update> 指定的變更，不要做其他未要求的格式化或清理。**
+- 不要改動與更新無關的程式碼。]],
+          },
+          {
+            role = "user",
+            content = [[<code>
+{{{original_code}}}
+
+<update>
+{{{new_code}}}
+</update>]],
+            opts = {
+              variables = {
+                original_code = "#{buffer}",
+                new_code = "#{selection}",
+              },
+            },
+          },
+        },
+      },
+
+      -- Autocomplete（近似 FIM 補全）：以視覺模式切片模擬 prefix/suffix
+      ["Autocomplete（FIM 近似）」"] = {
+        strategy = "inline",
+        description = "以 FIM 風格在選取位置進行補全",
+        opts = {
+          short_name = "autocomplete",
+          modes = { "v" },
+          auto_submit = true,
+          adapter = { name = "qwen3_coder_30b", model = "Qwen3-Coder-30B-A3B-Instruct" },
+        },
+        prompts = {
+          { role = "system", content = "你是一位程式碼補全助理。請以繁體中文回覆。" },
+          {
+            role = "user",
+            content = [[<|fim_prefix|>{{{prefix}}}<|fim_suffix|>{{{suffix}}}<|fim_middle|>]],
+            opts = {
+              variables = {
+                prefix = "#{buffer_before_selection}",
+                suffix = "#{buffer_after_selection}",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+
+

@@ -3,8 +3,8 @@ return {
   {
     "notjedi/nvim-rooter.lua",
     opts = {
-      rooter_patterns   = { '.cache', '.setting', '.svn', '.git', '.root' }, -- root
-      --rooter_patterns   = { '.root' }, -- root
+      --rooter_patterns   = { '.cache', '.setting', '.svn', '.git', '.root' }, -- root
+      rooter_patterns   = { '.root' }, -- root
       trigger_partterns = { "*" },
       manual            = false,
     },
@@ -122,21 +122,22 @@ return {
   -- notify
   {
     "rcarriga/nvim-notify",
-    background_colour = "#000000",
-    fps = 30,
-    icons = {
-      DEBUG = "🐛",
-      ERROR = "💀",
-      INFO  = "✅",
-      WARN  = "⚠ ",
+    opts = {
+      background_colour = "#000000",
+      fps = 30,
+      icons = {
+        DEBUG = "🐛",
+        ERROR = "💀",
+        INFO  = "✅",
+        WARN  = "⚠ ",
+      },
+      level = 2,
+      minimum_width = 50,
+      render = "compact",
+      stages = "fade_in_slide_out",
+      timeout = 5000,
+      top_down = true,
     },
-    level = 2,
-    minimum_width = 50,
-    render = "compact",
-    stages = "fade_in_slide_out",
-    timeout = 5000,
-    top_down = true,
-
     init = function()
       vim.notify = require("notify")
     end,
