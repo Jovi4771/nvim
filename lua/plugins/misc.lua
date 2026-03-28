@@ -127,18 +127,6 @@ return {
     event = "VeryLazy",
   },
 
-  -- ui patch
-  {
-    "nvim-lua/plenary.nvim",
-    lazy = true,
-  },
-
-  -- icons
-  {
-    "nvim-tree/nvim-web-devicons",
-    lazy = true,
-  },
-
   -- smoothly scroll
   {
     "psliwka/vim-smoothie",
