@@ -43,5 +43,4 @@ require("config/options")
 require("config/functions")
 require("config/keymaps")
 require("utils/clangd")
-require("utils/avante")
 

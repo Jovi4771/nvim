@@ -6,12 +6,12 @@
 -- See: https://neovim.io/doc/user/vim_diff.html
 -- [2] Defaults - *nvim-defaults*
 
-local g   = vim.g       -- Global variables
-local opt = vim.opt     -- Set options (global/buffer/windows-scoped)
-local api = vim.api     --
-local lsp = vim.lsp     --
-local cmd = vim.cmd     --
-local fn  = vim.fn      --
+local g = vim.g       -- Global variables
+local opt = vim.opt    -- Set options (global/buffer/windows-scoped)
+local api = vim.api    --
+local lsp = vim.lsp    --
+local cmd = vim.cmd    --
+local fn = vim.fn      --
 
 -----------------------------------------------------------
 -- General
@@ -97,9 +97,5 @@ lsp.set_log_level("OFF")
 for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
   api.nvim_set_hl(0, group, {})
 end
-
-
-
-
 
 

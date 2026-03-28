@@ -1,4 +1,10 @@
+-----------------------------------------------------------
+-- Miscellaneous Plugins
+-- which-key, rooter, fonts, editor tools, etc.
+-----------------------------------------------------------
+
 return {
+
   {
     "folke/which-key.nvim",
     event = "VeryLazy",

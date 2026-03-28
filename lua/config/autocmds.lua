@@ -32,8 +32,7 @@ autocmd('BufEnter', {
   command = 'set fo-=c fo-=r fo-=o'
 })
 
-
--- Settings for filetypes:
+-- Settings for filetypes
 --------------------------
 
 -- Disable line length marker
@@ -70,9 +69,7 @@ autocmd('Filetype', {
   command = 'command! -nargs=+ Man :execute "echo """'
 })
 
-
-
--- Terminal settings:
+-- Terminal settings
 ---------------------
 
 -- Open a Terminal on the right tab
@@ -96,8 +93,7 @@ autocmd('BufLeave', {
   command = 'stopinsert'
 })
 
-
--- File Status settings:
+-- File Status settings
 ---------------------
 
 -- Auto-detect file change when user return
@@ -113,12 +109,4 @@ autocmd('FileChangedShellPost', {
     MyNotify('File changed on disk. Buffer reloaded !!!', 'warn')
   end
 })
-
-
------------------------------------------------------------
--- Applications and Plugins auto-command
------------------------------------------------------------
-
-
-
 

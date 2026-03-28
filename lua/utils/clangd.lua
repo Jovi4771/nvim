@@ -1,4 +1,11 @@
+-----------------------------------------------------------
+-- Clangd Utilities
+-- Generate compile_commands.json for C/C++ projects
+-----------------------------------------------------------
+
 local table_ext_methods = {}
+
+
 
 function table_ext_methods:keys()
   local keys = {}
@@ -20,7 +27,7 @@ function table_ext_methods:values()
   return values
 end
 
-local table_ext_mt = {__index = table_ext_methods}
+local table_ext_mt = { __index = table_ext_methods }
 
 local sep = (function()
   if jit then

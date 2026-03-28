@@ -98,7 +98,7 @@ end
 -- vimrc
 function MyVIMRC()
   vim.cmd('silent! :e $MYVIMRC')
-  vim.cmd('silent! cd '.. vim.fn.expand('%:h'))
+  vim.cmd('silent! cd ' .. vim.fn.expand('%:h'))
   MyNotify("Edit my vimrc file !!!")
 end
 

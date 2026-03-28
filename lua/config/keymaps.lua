@@ -50,7 +50,7 @@ map('n', '<leader>rr', ':so $MYVIMRC<CR>')
 
 map('n', '<space>', '<nop>')
 map('n', '<F2>', ':lua MyVIMRC()<CR>')
-map('n', 'o',  'ko<esc>')
+map('n', 'o', 'ko<esc>')
 map('n', 'I', 'i<space><esc>')
 map('n', '<leader>w', '<C-w>')
 map('n', '<A-Right>', '<C-w>5>')
@@ -60,9 +60,9 @@ map('n', '<C-,>', '<C-w>5<')
 map('n', '<A-Up>', '<C-w>3+')
 map('n', '<A-Down>', '<C-w>3-')
 if vim.fn.has("win32") then
-map('v', '<leader>y', '"*y')
-map('n', '<leader>p', '"*p')
-map('v', '<leader>p', '"*p')
+  map('v', '<leader>y', '"*y')
+  map('n', '<leader>p', '"*p')
+  map('v', '<leader>p', '"*p')
 end
 map('n', '9y', '"9y')
 map('n', '9p', '"9p')
@@ -77,13 +77,4 @@ map('n', 'q:', '<nop>')
 map('n', 'Q', '<nop>')
 map('n', '<C-Right>', ':bnext<CR>')
 map('n', '<C-Left>', ':bNext<CR>')
-
-
------------------------------------------------------------
--- Applications and Plugins shortcuts
------------------------------------------------------------
---:echo @%                |" directory/name of file
---:echo expand('%:t')     |" name of file ('tail')
---:echo expand('%:p')     |" full path
---:echo expand('%:p:h')   |" directory containing file ('head')
 
