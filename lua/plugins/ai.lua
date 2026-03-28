@@ -8,13 +8,13 @@ return {
     "nickjvandyke/opencode.nvim",
     version = "*",
     dependencies = {
-      "folke/snacks.nvim",
+      { "folke/snacks.nvim", optional = true },
     },
     config = function()
       vim.g.opencode_opts = {
         server = {
           start = function()
-            vim.cmd([[BotRightNew | terminal opencode]])
+            vim.cmd([[BotRightNew | terminal opencode --port]])
             vim.cmd([[set noswapfile]])
           end,
         },
