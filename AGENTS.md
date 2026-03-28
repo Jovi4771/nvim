@@ -59,7 +59,6 @@ nvim/
 :checkhealth
 
 # 檢查特定插件
-:checkhealth opencode
 :checkhealth telescope
 :checkhealth lspconfig
 

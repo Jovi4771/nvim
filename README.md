@@ -103,5 +103,5 @@ nvim
 | **UI** | gruvbox, lualine, alpha-nvim |
 | **搜尋** | telescope.nvim, telescope-file-browser |
 | **工具** | possession, vim-surround, targets.vim |
-| **AI** | opencode.nvim, snacks.nvim |
+| **AI** | (none) |
 | **其他** | which-key, indentLine, nvim-notify |
