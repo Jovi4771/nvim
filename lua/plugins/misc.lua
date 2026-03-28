@@ -1,4 +1,24 @@
 return {
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    init = function()
+      vim.opt.timeout = true
+      vim.opt.timeoutlen = 300
+    end,
+    opts = {
+      ["<leader>"] = {
+        f = { name = "+file" },
+        b = { name = "+buffer" },
+        p = { name = "+project" },
+        g = { name = "+git" },
+        s = { name = "+search" },
+        t = { name = "+toggle" },
+        d = { name = "+debug" },
+      },
+    },
+  },
+
   -- rooter
   {
     "notjedi/nvim-rooter.lua",

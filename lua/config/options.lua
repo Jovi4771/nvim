@@ -19,6 +19,7 @@ local fn  = vim.fn      --
 opt.mouse = 'a'                                    -- Enable mouse support
 --opt.clipboard = 'unnamedplus'                    -- Copy/paste to system clipboard
 opt.swapfile = false                               -- Don't use swapfile
+opt.shadafile = 'NONE'                             -- Disable ShaDa
 opt.completeopt = 'menu,menuone,noinsert,noselect' -- Autocomplete options
 opt.autoread = true                                -- 檔案被修改後自動讀取
 opt.autochdir = false                              -- 不自動變更工作目錄
