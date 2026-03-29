@@ -236,6 +236,27 @@ end
 
 主題配置在 `lua/plugins/ui.lua`（預設為 gruvbox）。
 
+### Opencode AI Assistant
+
+Opencode 是一個 AI 程式碼輔助工具，安裝於 `lua/plugins/ai.lua`。
+
+#### 功能
+
+- **互動式詢問**：對選取範圍或目前行提問 AI
+- **動作執行**：執行 AI 建議的程式碼修改
+- **Operator 模式**：將選取範圍傳送給 AI 處理
+
+#### 預設鍵位
+
+| 按鍵 | 功能 | 模式 |
+|------|------|------|
+| `<C-a>` | 詢問 opencode（自動提交） | Normal, Visual |
+| `<C-x>` | 開啟動作選擇選單 | Normal, Visual |
+
+#### 配置
+
+Opencode 配置文件位於 `lua/plugins/ai.lua`，可根據需求修改鍵位或選項。
+
 ### 除錯問題
 
 1. 執行 `:checkhealth` 識別問題
