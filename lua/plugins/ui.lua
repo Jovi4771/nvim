@@ -17,7 +17,12 @@ return {
       vim.cmd("highlight Comment ctermfg=73 guifg=#6CA6D4")
     end,
   },
-
+  {
+    "j-hui/fidget.nvim",
+    opts = {
+      -- options
+    },
+  },
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",

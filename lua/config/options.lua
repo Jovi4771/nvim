@@ -92,10 +92,63 @@ opt.updatetime = 250             -- ms to wait for trigger an event
 -- disable log
 -- Levels by name: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"
 lsp.set_log_level("OFF")
-
 -- Hide all semantic highlights
 for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
   api.nvim_set_hl(0, group, {})
 end
+-- 1. 全域禁用內建 Tag，防止沒 LSP 時按到噴紅字 (E433)
+vim.keymap.set('n', '<C-]>', '<nop>')
+
+-- 2. 設定 LSP Attach 自動指令
+local fidget = require("fidget")
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+    -- 檢查該 LSP 是否支援跳轉功能
+    if client and client.server_capabilities.definitionProvider then
+      vim.keymap.set('n', '<C-]>', function()
+        local word = vim.fn.expand('<cword>')
+
+        -- 1. 建立 Fidget 進度條 (英文提示)
+        local handle = fidget.progress.handle.create({
+          title = "LSP Searching...",
+          message = "Finding definition of '" .. word .. "'",
+          lsp_client = { name = client.name },
+        })
+
+        -- 2. 獲取參數並明確傳入編碼以消除警告
+        local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+
+        -- 3. 發送 LSP 請求
+        client.request('textDocument/definition', params, function(err, result, ctx, _)
+          -- 收到結果後立刻結束 Fidget
+          handle:finish()
+
+          -- 4. 處理錯誤與找不到的情況 (英文通知)
+          if err then
+            fidget.notify("LSP Error: " .. err.message, vim.log.levels.ERROR)
+            return
+          end
+
+          if not result or vim.tbl_isempty(result) then
+            fidget.notify("No definition found for '" .. word .. "'", vim.log.levels.WARN)
+            return
+          end
+
+          -- 5. 執行跳轉
+          -- 處理單個或多個結果 (If result is a list, take the first one)
+          local location = vim.islist(result) and result[1] or result
+
+          -- 使用新版函式跳轉，消除 Deprecated 警告
+          vim.lsp.util.show_document(location, client.offset_encoding, { focus = true })
+
+        end, ev.buf)
+      end, { buffer = ev.buf, desc = "LSP Jump (English UI)" })
+    end
+  end,
+})
 
 
