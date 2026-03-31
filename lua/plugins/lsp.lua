@@ -44,7 +44,7 @@ return {
     end,
 
     config = function()
-      vim.opt.updatetime = 500
+      vim.opt.updatetime = 1000
 
       vim.api.nvim_create_autocmd("CursorHold", {
         callback = function()

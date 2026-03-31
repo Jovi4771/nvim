@@ -100,7 +100,7 @@ end
 vim.keymap.set('n', '<C-]>', '<nop>')
 
 -- 2. 設定 LSP Attach 自動指令
-local fidget = require("fidget")
+local fidget_ok, fidget = pcall(require, "fidget")
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -113,39 +113,56 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local word = vim.fn.expand('<cword>')
 
         -- 1. 建立 Fidget 進度條 (英文提示)
-        local handle = fidget.progress.handle.create({
-          title = "LSP Searching...",
-          message = "Finding definition of '" .. word .. "'",
-          lsp_client = { name = client.name },
-        })
+        if fidget_ok then
+          local handle = fidget.progress.handle.create({
+            title = "LSP Searching...",
+            message = "Finding definition of '" .. word .. "'",
+            lsp_client = { name = client.name },
+          })
 
-        -- 2. 獲取參數並明確傳入編碼以消除警告
-        local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+          -- 2. 獲取參數並明確傳入編碼以消除警告
+          local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
 
-        -- 3. 發送 LSP 請求
-        client.request('textDocument/definition', params, function(err, result, ctx, _)
-          -- 收到結果後立刻結束 Fidget
-          handle:finish()
+          -- 3. 發送 LSP 請求
+          client.request('textDocument/definition', params, function(err, result, ctx, _)
+            -- 收到結果後立刻結束 Fidget
+            handle:finish()
 
-          -- 4. 處理錯誤與找不到的情況 (英文通知)
-          if err then
-            fidget.notify("LSP Error: " .. err.message, vim.log.levels.ERROR)
-            return
-          end
+            -- 4. 處理錯誤與找不到的情況 (英文通知)
+            if err then
+              fidget.notify("LSP Error: " .. err.message, vim.log.levels.ERROR)
+              return
+            end
 
-          if not result or vim.tbl_isempty(result) then
-            fidget.notify("No definition found for '" .. word .. "'", vim.log.levels.WARN)
-            return
-          end
+            if not result or vim.tbl_isempty(result) then
+              fidget.notify("No definition found for '" .. word .. "'", vim.log.levels.WARN)
+              return
+            end
 
-          -- 5. 執行跳轉
-          -- 處理單個或多個結果 (If result is a list, take the first one)
-          local location = vim.islist(result) and result[1] or result
+            -- 5. 執行跳轉
+            -- 處理單個或多個結果 (If result is a list, take the first one)
+            local location = vim.islist(result) and result[1] or result
 
-          -- 使用新版函式跳轉，消除 Deprecated 警告
-          vim.lsp.util.show_document(location, client.offset_encoding, { focus = true })
+            -- 使用新版函式跳轉，消除 Deprecated 警告
+            vim.lsp.util.show_document(location, client.offset_encoding, { focus = true })
 
-        end, ev.buf)
+          end, ev.buf)
+        else
+          -- 如果 fidget 未載入，直接使用 vim.lsp.util.jump
+          local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+          client.request('textDocument/definition', params, function(err, result, _, _)
+            if err then
+              vim.notify("LSP Error: " .. err.message, vim.log.levels.ERROR)
+              return
+            end
+            if not result or vim.tbl_isempty(result) then
+              vim.notify("No definition found for '" .. word .. "'", vim.log.levels.WARN)
+              return
+            end
+            local location = vim.islist(result) and result[1] or result
+            vim.lsp.util.show_document(location, client.offset_encoding, { focus = true })
+          end, ev.buf)
+        end
       end, { buffer = ev.buf, desc = "LSP Jump (English UI)" })
     end
   end,

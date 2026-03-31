@@ -88,7 +88,7 @@ return {
   -- 顯示縮排
   {
     "Yggdroot/indentLine",
-    lazy = false,
+    event = "VeryLazy",
 
     init = function()
       vim.g.indentLine_bufNameExclude = { "Alpha", "alpha", "mason" } -- disable list
