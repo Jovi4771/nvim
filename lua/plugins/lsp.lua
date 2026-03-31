@@ -31,7 +31,26 @@ return {
       })
 
       vim.lsp.enable("lua_ls")
+      vim.lsp.config("lua_ls", {
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
+            },
+          },
+        },
+      })
       vim.lsp.enable("pyright")
+    end,
+
+    config = function()
+      vim.opt.updatetime = 500
+
+      vim.api.nvim_create_autocmd("CursorHold", {
+        callback = function()
+          vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
+        end,
+      })
     end,
   },
 
