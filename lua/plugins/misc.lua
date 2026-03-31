@@ -13,6 +13,7 @@ return {
       vim.opt.timeoutlen = 300
     end,
     opts = {
+      triggers = {}, -- 註解此行以啟用自動彈出 which-key popup
       ["<leader>"] = {
         f = { name = "+file" },
         b = { name = "+buffer" },
