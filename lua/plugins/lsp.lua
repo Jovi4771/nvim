@@ -41,7 +41,8 @@ return {
 
       vim.api.nvim_create_autocmd("CursorHold", {
         callback = function()
-          vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
+          require('clean-diagnostic').show()
+          --vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
         end,
       })
     end,
@@ -62,4 +63,27 @@ return {
       handlers = {},
     },
   },
+
+  {
+    "kurama622/clean-diagnostic",
+    event = "LspAttach",
+    opts = {
+      sign_text = {
+        "❌",   -- error  🔴
+        "⚠️",   -- warn   🟠
+        "ℹ️",   -- info   🔵
+        "💡"    -- hint   🟢
+      },
+      border = "rounded",
+      min_severity = 4,
+      max_width = 78,
+    },
+    --keys = {
+    --  {
+    --    "<leader>sd",
+    --    "<cmd>lua require('clean-diagnostic').show()<cr>",
+    --    desc = "show the diagnostic of the current line",
+    --  },
+    --},
+  }
 }
