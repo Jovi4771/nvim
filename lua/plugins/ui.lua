@@ -11,7 +11,7 @@ return {
       vim.g.gruvbox_italic = 0
       vim.g.gruvbox_bold = 1
       vim.g.gruvbox_underline = 0
-      vim.api.nvim_set_option("background", "dark")
+      vim.o.background = "dark"
       vim.cmd("colorscheme gruvbox")
       vim.cmd("hi! link PreCondit GruvboxAquaBold")
       vim.cmd("highlight Comment ctermfg=73 guifg=#6CA6D4")

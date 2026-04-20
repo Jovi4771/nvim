@@ -84,7 +84,7 @@ function RootCheck(path)
   local rootFilePath = path .. '/.root'
   local success, _ = os.rename(rootFilePath, rootFilePath)
   if not success then
-    MyNotify('"' .. vim.loop.fs_realpath(path) .. '" is not root', 'error')
+    MyNotify('"' .. (vim.uv or vim.loop).fs_realpath(path) .. '" is not root', 'error')
     return false
   end
   return true -- is root
@@ -130,7 +130,7 @@ end
 -- telescope file browser
 function TelescopeFileBrowser(path)
   if telescope_status_ok and telescope_file_browser_status_ok then
-    path = path or vim.loop.cwd()
+    path = path or (vim.uv or vim.loop).cwd()
     vim.cmd('silent! cd ' .. vim.fn.expand(path))
     vim.cmd('silent! Telescope file_browser')
     MyNotify('Searching in ' .. path)
@@ -148,7 +148,7 @@ function GuiFontResizeUp()
   if gut_font_resize_ok then
     vim.cmd("GUIFontSizeUp")
 
-    local _, guifont = pcall(function() return vim.api.nvim_get_option("guifont") end)
+    local _, guifont = pcall(function() return vim.o.guifont end)
     MyNotify('GUI Font = ' .. guifont)
   end
 end
@@ -157,7 +157,7 @@ function GuiFontResizeDown()
   if gut_font_resize_ok then
     vim.cmd("GUIFontSizeDown")
 
-    local _, guifont = pcall(function() return vim.api.nvim_get_option("guifont") end)
+    local _, guifont = pcall(function() return vim.o.guifont end)
     MyNotify('GUI Font = ' .. guifont)
   end
 end
@@ -166,7 +166,7 @@ function GuiFontResizeReset()
   if gut_font_resize_ok then
     vim.cmd("GUIFontSizeSet")
 
-    local _, guifont = pcall(function() return vim.api.nvim_get_option("guifont") end)
+    local _, guifont = pcall(function() return vim.o.guifont end)
     MyNotify('GUI Font = ' .. guifont)
   end
 end

@@ -2,79 +2,54 @@
 -- Define keymaps of Neovim and installed plugins.
 -----------------------------------------------------------
 local function map(mode, lhs, rhs, opts)
-  local options = { noremap=true, silent=true }
+  local options = { noremap = true, silent = true }
   if opts then
     options = vim.tbl_extend('force', options, opts)
   end
-  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+  vim.keymap.set(mode, lhs, rhs, options)
 end
 
 -----------------------------------------------------------
 -- Neovim shortcuts
 -----------------------------------------------------------
 
--- Disable arrow keys
---map('', '<up>', '<nop>')
---map('', '<down>', '<nop>')
---map('', '<left>', '<nop>')
---map('', '<right>', '<nop>')
-
--- Map Esc to kk
---map('i', 'kk', '<Esc>')
-
 -- Clear search highlighting with <leader> and c
-map('n', '<leader>c', ':nohl<CR>')
-
--- Toggle auto-indenting for code paste
---map('n', '<F3>', ':set invpaste paste?<CR>')
---vim.opt.pastetoggle = '<F3>'
+map('n', '<leader>c', ':nohl<CR>', { desc = 'Clear search highlight' })
 
 -- Change split orientation
-map('n', '<leader>tk', '<C-w>t<C-w>K') -- change vertical to horizontal
-map('n', '<leader>th', '<C-w>t<C-w>H') -- change horizontal to vertical
-
--- Move around splits using Ctrl + {h,j,k,l}
---map('n', '<C-h>', '<C-w>h')
---map('n', '<C-j>', '<C-w>j')
---map('n', '<C-k>', '<C-w>k')
---map('n', '<C-l>', '<C-w>l')
+map('n', '<leader>tk', '<C-w>t<C-w>K', { desc = 'Split: vertical -> horizontal' })
+map('n', '<leader>th', '<C-w>t<C-w>H', { desc = 'Split: horizontal -> vertical' })
 
 -- Reload configuration without restart nvim
-map('n', '<leader>rr', ':so $MYVIMRC<CR>')
+map('n', '<leader>rr', ':source $MYVIMRC<CR>', { desc = 'Reload $MYVIMRC' })
 
--- Fast saving with <leader> and s
---map('n', '<leader>s', ':w<CR>')
+map('n', '<space>', '<nop>', { desc = 'Disable <space>' })
+map('n', '<F2>', ':lua MyVIMRC()<CR>', { desc = 'Edit $MYVIMRC' })
+map('n', 'o', 'ko<esc>', { desc = 'Insert line above, stay normal' })
+map('n', 'I', 'i<space><esc>', { desc = 'Insert single space' })
+map('n', '<leader>w', '<C-w>', { desc = 'Window prefix' })
+map('n', '<A-Right>', '<C-w>5>', { desc = 'Resize window right' })
+map('n', '<A-Left>',  '<C-w>5<', { desc = 'Resize window left' })
+map('n', '<C-.>',     '<C-w>5>', { desc = 'Resize window right' })
+map('n', '<C-,>',     '<C-w>5<', { desc = 'Resize window left' })
+map('n', '<A-Up>',    '<C-w>3+', { desc = 'Resize window up' })
+map('n', '<A-Down>',  '<C-w>3-', { desc = 'Resize window down' })
 
--- Close all windows and exit from Neovim with <leader> and q
---map('n', '<leader>q', ':qa!<CR>')
-
-map('n', '<space>', '<nop>')
-map('n', '<F2>', ':lua MyVIMRC()<CR>')
-map('n', 'o', 'ko<esc>')
-map('n', 'I', 'i<space><esc>')
-map('n', '<leader>w', '<C-w>')
-map('n', '<A-Right>', '<C-w>5>')
-map('n', '<A-Left>', '<C-w>5<')
-map('n', '<C-.>', '<C-w>5>')
-map('n', '<C-,>', '<C-w>5<')
-map('n', '<A-Up>', '<C-w>3+')
-map('n', '<A-Down>', '<C-w>3-')
-if vim.fn.has("win32") then
-  map('v', '<leader>y', '"*y')
-  map('n', '<leader>p', '"*p')
-  map('v', '<leader>p', '"*p')
+if vim.fn.has("win32") == 1 then
+  map('v', '<leader>y', '"*y', { desc = 'Yank to system clipboard' })
+  map('n', '<leader>p', '"*p', { desc = 'Paste from system clipboard' })
+  map('v', '<leader>p', '"*p', { desc = 'Paste from system clipboard' })
 end
-map('n', '9y', '"9y')
-map('n', '9p', '"9p')
-map('n', '<C-z>', '<nop>')
-map('n', 'vv', 'viw')
-map('n', '<leader>rr', ':source $MYVIMRC<CR>')
-map('n', '*', '*``')
-map('n', '<C-/>', 'i/*  */<ESC>2hi')
-map('i', '<C-/>', '/*  */<ESC>2hi')
-map('i', '<S-Tab>', '<C-d>')
-map('n', 'q:', '<nop>')
-map('n', 'Q', '<nop>')
-map('n', '<C-Right>', ':bnext<CR>')
-map('n', '<C-Left>', ':bNext<CR>')
 
+map('n', '9y', '"9y',   { desc = 'Yank to register 9' })
+map('n', '9p', '"9p',   { desc = 'Paste from register 9' })
+map('n', '<C-z>', '<nop>', { desc = 'Disable <C-z>' })
+map('n', 'vv', 'viw', { desc = 'Select inner word' })
+map('n', '*',  '*``', { desc = 'Search word (keep cursor)' })
+map('n', '<C-/>', 'i/*  */<ESC>2hi', { desc = 'Insert C comment' })
+map('i', '<C-/>', '/*  */<ESC>2hi', { desc = 'Insert C comment' })
+map('i', '<S-Tab>', '<C-d>', { desc = 'Outdent' })
+map('n', 'q:', '<nop>', { desc = 'Disable q:' })
+map('n', 'Q',  '<nop>', { desc = 'Disable Q' })
+map('n', '<C-Right>', ':bnext<CR>', { desc = 'Next buffer' })
+map('n', '<C-Left>',  ':bNext<CR>', { desc = 'Previous buffer' })
