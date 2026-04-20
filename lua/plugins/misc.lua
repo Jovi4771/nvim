@@ -100,20 +100,6 @@ return {
   {
     "octol/vim-cpp-enhanced-highlight",
     event = "VeryLazy",
-
-    init = function()
-      -- Highlight #Define
-      vim.cmd([[syn match defined "\v\w@<!(\u|_|r+[A-Z0-9])[A-Z0-9_]*\w@!"]])
-      vim.cmd([[hi def link defined Type]])
-
-      -- Highlight global variable
-      vim.cmd([[syn match globalVariable "\vg([A-Z][A-Za-z0-9_]+)+" ]])
-      vim.cmd([[hi globalVariable ctermfg=217 guifg=#FF7FC9]])
-
-      -- Highlight private variable
-      vim.cmd([[syn match privateVariable "\vp([A-Z][A-Za-z0-9_]+)+" ]])
-      vim.cmd([[hi privateVariable ctermfg=217 guifg=#CDC1FF]])
-    end,
   },
 
   -- auto resize windows

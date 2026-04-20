@@ -3,16 +3,17 @@
 -- Combines: possession + spectre + vim-quickhl + vim-table-mode + vim-visual-multi
 -----------------------------------------------------------
 
+local sessionpath = vim.fn.stdpath("data") .. "/.cache/nvim-sessions"
+
 return {
   {
     "jedrzejboczar/possession.nvim",
     lazy = false,
     init = function()
-      local sessionpath = vim.fn.stdpath("data") .. "/.cache/nvim-sessions"
       vim.fn.mkdir(sessionpath, 'p')
     end,
     opts = {
-      session_dir  = vim.fn.stdpath("data") .. "/.cache/nvim-sessions",
+      session_dir  = sessionpath,
       silent       = false,
       load_silent  = true,
       debug        = false,

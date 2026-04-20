@@ -59,9 +59,10 @@ local function parse_source(root)
   local stack = {root}
   while #stack > 0 do
     local dir = table.remove(stack)
-    local handle = vim.loop.fs_scandir(dir)
+    local uv = vim.uv or vim.loop
+    local handle = uv.fs_scandir(dir)
     while handle do
-      local name, typ = vim.loop.fs_scandir_next(handle)
+      local name, typ = uv.fs_scandir_next(handle)
       if not name then
         break
       end
@@ -175,18 +176,27 @@ function generate_compile_commands(root)
   end
 
   -- force cover compile_commands.json
-  local file = io.open(root .. sep .. 'compile_commands.json', 'w+')
-  file:write(to_file(commands))
-  file:close()
+  local cc_path = root .. sep .. 'compile_commands.json'
+  local cc_file, cc_err = io.open(cc_path, 'w+')
+  if not cc_file then
+    MyNotify('Failed to write ' .. cc_path .. ': ' .. (cc_err or 'unknown error'), 'error')
+    return
+  end
+  cc_file:write(to_file(commands))
+  cc_file:close()
 
   -- generate preprocessor.txt if not exist
-  local file = io.open(root .. sep .. 'preprocessor.txt', 'r')
-  if file then
-    -- skip
-    file:close()
+  local pp_path = root .. sep .. 'preprocessor.txt'
+  local pp_read = io.open(pp_path, 'r')
+  if pp_read then
+    pp_read:close()
   else
-    local file = io.open(root .. sep .. 'preprocessor.txt', 'w+')
-    file:close()
+    local pp_write, pp_err = io.open(pp_path, 'w+')
+    if not pp_write then
+      MyNotify('Failed to create ' .. pp_path .. ': ' .. (pp_err or 'unknown error'), 'error')
+      return
+    end
+    pp_write:close()
   end
 end
 

@@ -21,14 +21,18 @@ autocmd('TextYankPost', {
 })
 
 -- Remove whitespace on save
+augroup('TrimWhitespace', { clear = true })
 autocmd('BufWritePre', {
-  pattern = '',
+  group = 'TrimWhitespace',
+  pattern = '*',
   command = ":%s/\\s\\+$//e"
 })
 
 -- Don't auto commenting new lines
+augroup('NoAutoComment', { clear = true })
 autocmd('BufEnter', {
-  pattern = '',
+  group = 'NoAutoComment',
+  pattern = '*',
   command = 'set fo-=c fo-=r fo-=o'
 })
 
@@ -72,23 +76,29 @@ autocmd('Filetype', {
 -- Terminal settings
 ---------------------
 
+local terminalGroup = augroup('TerminalSettings', { clear = true })
+
 -- Open a Terminal on the right tab
 autocmd('CmdlineEnter', {
+  group = terminalGroup,
   command = 'command! Term :botright vsplit term://$SHELL'
 })
 
 -- Enter insert mode when switching to terminal
 autocmd('TermOpen', {
+  group = terminalGroup,
   command = 'setlocal listchars= nonumber norelativenumber nocursorline',
 })
 
 autocmd('TermOpen', {
-  pattern = '',
+  group = terminalGroup,
+  pattern = '*',
   command = 'startinsert'
 })
 
 -- Close terminal buffer on process exit
 autocmd('BufLeave', {
+  group = terminalGroup,
   pattern = 'term://*',
   command = 'stopinsert'
 })
@@ -96,17 +106,20 @@ autocmd('BufLeave', {
 -- File Status settings
 ---------------------
 
+local fileStatusGroup = augroup('FileStatus', { clear = true })
+
 -- Auto-detect file change when user return
 autocmd({'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI'}, {
+  group = fileStatusGroup,
   pattern = '*',
   command = "if mode() != 'c' | checktime | endif"
 })
 
 -- Notify user the file was been changed
 autocmd('FileChangedShellPost', {
+  group = fileStatusGroup,
   pattern = '*',
   callback = function()
     MyNotify('File changed on disk. Buffer reloaded !!!', 'warn')
   end
 })
-

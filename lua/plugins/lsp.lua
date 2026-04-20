@@ -37,12 +37,10 @@ return {
     end,
 
     config = function()
-      vim.opt.updatetime = 1000
-
       vim.api.nvim_create_autocmd("CursorHold", {
+        group = vim.api.nvim_create_augroup("LspDiagnosticHover", { clear = true }),
         callback = function()
           require('clean-diagnostic').show()
-          --vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
         end,
       })
     end,
