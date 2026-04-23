@@ -30,7 +30,7 @@ end
 -- binary
 function BinaryEnter(num)
   num = num or '4'
-  vim.cmd(':%!xxd -e -g ' .. num)
+  vim.cmd('%!xxd -e -g ' .. num)
 end
 
 function BinaryExit()

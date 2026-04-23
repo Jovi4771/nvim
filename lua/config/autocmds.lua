@@ -123,3 +123,46 @@ autocmd('FileChangedShellPost', {
     MyNotify('File changed on disk. Buffer reloaded !!!', 'warn')
   end
 })
+
+-- Binary file handling
+local bin_group = vim.api.nvim_create_augroup("Binary", { clear = true })
+
+vim.api.nvim_create_autocmd({"BufReadPre"}, {
+  pattern = "*.bin",
+  group = bin_group,
+  callback = function()
+    vim.opt_local.binary = true
+  end,
+})
+
+vim.api.nvim_create_autocmd({"BufReadPost"}, {
+  pattern = "*.bin",
+  group = bin_group,
+  callback = function()
+    if vim.opt_local.binary:get() then
+      vim.cmd('%!xxd -e -g 4')
+      vim.opt_local.filetype = "xxd"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd({"BufWritePre"}, {
+  pattern = "*.bin",
+  group = bin_group,
+  callback = function()
+    if vim.opt_local.binary:get() then
+      vim.cmd('%!xxd -r')
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd({"BufWritePost"}, {
+  pattern = "*.bin",
+  group = bin_group,
+  callback = function()
+    if vim.opt_local.binary:get() then
+      vim.cmd('%!xxd -e -g 4')
+      vim.cmd('set nomodified')
+    end
+  end,
+})
