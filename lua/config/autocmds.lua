@@ -153,6 +153,8 @@ vim.api.nvim_create_autocmd({"BufWritePre"}, {
   callback = function()
     if vim.opt_local.binary:get() then
       vim.cmd('%!xxd -r')
+      vim.cmd('%!xxd -e -g 4')
+      vim.cmd('%!xxd -r')
     end
   end,
 })
@@ -162,7 +164,7 @@ vim.api.nvim_create_autocmd({"BufWritePost"}, {
   group = bin_group,
   callback = function()
     if vim.opt_local.binary:get() then
-      vim.cmd('%!xxd -g 4')
+      vim.cmd('%!xxd -e -g 4')
       vim.opt_local.modified = false
     end
   end,
