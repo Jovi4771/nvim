@@ -151,18 +151,7 @@ vim.api.nvim_create_autocmd({"BufWritePre"}, {
   group = bin_group,
   callback = function()
     if vim.opt_local.binary:get() then
-      vim.cmd('%!xxd -r')
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd({"BufWritePost"}, {
-  pattern = "*.bin",
-  group = bin_group,
-  callback = function()
-    if vim.opt_local.binary:get() then
-      vim.cmd('%!xxd -e -g 4')
-      vim.cmd('set nomodified')
+      vim.cmd('%!xxd -r -e')
     end
   end,
 })
