@@ -91,7 +91,7 @@ opt.updatetime = 1000            -- ms to wait for trigger an event (used by LSP
 -----------------------------------------------------------
 -- disable log
 -- Levels by name: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"
-lsp.set_level("OFF")
+vim.lsp.log.set_level("OFF")
 -- Hide all semantic highlights
 for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
   api.nvim_set_hl(0, group, {})
