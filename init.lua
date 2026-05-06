@@ -38,9 +38,9 @@ require("lazy").setup({
 })
 
 -- Load configuration modules
-require("config/autocmds")
-require("config/options")
-require("config/functions")
-require("config/keymaps")
-require("utils/clangd")
+require("config.autocmds")
+require("config.options")
+require("config.functions")
+require("config.keymaps")
+require("utils.clangd")
 

@@ -29,7 +29,8 @@ nvim/
 │   │   ├── ai.lua           # AI 輔助
 │   │   └── misc.lua         # 其他插件
 │   └── utils/               # 工具模組
-│       └── clangd.lua
+│       ├── clangd.lua
+│       └── platform.lua     # 跨平台判斷（Win/macOS/Linux）
 ├── README.md
 └── lazy-lock.json          # 鎖定的插件版本
 ```
@@ -192,9 +193,12 @@ if status_ok then
   -- 安全使用模組
 end
 
--- 檢查插件可用性
-if vim.fn.has("win32") == 1 then
+-- 平台判斷請統一使用 utils.platform 模組
+local platform = require('utils.platform')
+if platform.is_win then
   -- Windows 專用程式碼
+elseif platform.is_mac then
+  -- macOS 專用程式碼
 end
 ```
 
@@ -222,7 +226,7 @@ end
 2. **測試變更**：始終使用 `:LazySync` 和重啟來驗證變更
 3. **重構前備份**：重構前提交工作狀態
 4. **尊重用戶偏好**：除非要求更改，否則保持現有鍵位和工作流程不變
-5. **Win32 相容性**：此配置主要用於 Windows（win32）
+5. **跨平台相容性**：此配置同時支援 Windows 與 macOS。任何新加的平台相關程式碼，請優先使用 `lua/utils/platform.lua` 中的 `is_win` / `is_mac` / `is_unix` / `sep` / `clipboard_reg`，避免直接散寫 `vim.fn.has('win32')`
 
 ## 常見任務
 
@@ -255,8 +259,9 @@ Opencode 是一個 AI 程式碼輔助工具，安裝於 `lua/plugins/ai.lua`。
 
 | 按鍵 | 功能 | 模式 |
 |------|------|------|
-| `<C-a>` | 詢問 opencode（自動提交） | Normal, Visual |
-| `<C-x>` | 開啟動作選擇選單 | Normal, Visual |
+| `<leader>oa` | 詢問 opencode（自動提交） | Normal, Visual |
+| `<leader>os` | 開啟 opencode 動作選單 | Normal, Visual |
+| `<A-a>` | Snacks picker 中送出選取項目給 opencode | Picker (n/i) |
 
 #### 配置
 

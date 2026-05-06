@@ -63,7 +63,8 @@ opt.listchars:append({
 opt.cursorline = true            -- 顯示游標所在行
 cmd([[syntax on]])               -- 啟用語法Highlight
 g.c_syntax_for_h = 1             -- 讓 .h 檔案也啟用 C 語言的 Highlight
-opt.guifont='Consolas:h12'
+-- GUI 字型依平台自動選擇（Win=Consolas, macOS=Menlo, Linux=monospace）
+opt.guifont = require('utils.platform').default_guifont()
 
 -----------------------------------------------------------
 -- Tabs, indent

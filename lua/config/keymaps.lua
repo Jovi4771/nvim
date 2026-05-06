@@ -35,11 +35,12 @@ map('n', '<C-,>',     '<C-w>5<', { desc = 'Resize window left' })
 map('n', '<A-Up>',    '<C-w>3+', { desc = 'Resize window up' })
 map('n', '<A-Down>',  '<C-w>3-', { desc = 'Resize window down' })
 
-if vim.fn.has("win32") == 1 then
-  map('v', '<leader>y', '"*y', { desc = 'Yank to system clipboard' })
-  map('n', '<leader>p', '"*p', { desc = 'Paste from system clipboard' })
-  map('v', '<leader>p', '"*p', { desc = 'Paste from system clipboard' })
-end
+-- 系統剪貼簿（跨平台：Win 用 *、macOS / Linux 用 +）
+local platform = require('utils.platform')
+local reg = platform.clipboard_reg
+map('v', '<leader>y', '"' .. reg .. 'y', { desc = 'Yank to system clipboard' })
+map('n', '<leader>p', '"' .. reg .. 'p', { desc = 'Paste from system clipboard' })
+map('v', '<leader>p', '"' .. reg .. 'p', { desc = 'Paste from system clipboard' })
 
 map('n', '9y', '"9y',   { desc = 'Yank to register 9' })
 map('n', '9p', '"9p',   { desc = 'Paste from register 9' })
@@ -52,4 +53,4 @@ map('i', '<S-Tab>', '<C-d>', { desc = 'Outdent' })
 map('n', 'q:', '<nop>', { desc = 'Disable q:' })
 map('n', 'Q',  '<nop>', { desc = 'Disable Q' })
 map('n', '<C-Right>', ':bnext<CR>', { desc = 'Next buffer' })
-map('n', '<C-Left>',  ':bNext<CR>', { desc = 'Previous buffer' })
+map('n', '<C-Left>',  ':bprevious<CR>', { desc = 'Previous buffer' })
