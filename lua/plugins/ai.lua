@@ -48,7 +48,8 @@ return {
       vim.api.nvim_create_user_command("OpencodeStart", function()
         local platform = require("utils.platform")
         local cwd = vim.fn.getcwd()
-        local port = 8299
+        local pid = vim.fn.getpid()
+        local port = 4000 + (pid % 1000)
         local args
 
         if platform.is_win then
@@ -91,15 +92,42 @@ return {
       end, { desc = "Start opencode in external terminal at Neovim's cwd" })
     end,
     config = function()
+      -- 1. 計算唯一 Port
+      local pid = vim.fn.getpid()
+      local port = 4000 + (pid % 1000)
+
+      -- 2. 將 Port 傳入指令串 (例如: "opencode --port 4123")
+      local opencode_cmd = "opencode --port " .. port
+
+      ---@type snacks.terminal.Opts
+      local snacks_terminal_opts = {
+        win = {
+          position = 'right',
+          enter = false,
+          on_win = function(win)
+            require('opencode.terminal').setup(win.win)
+          end,
+        },
+      }
+
       ---@type opencode.Opts
+      -- 直接設定 vim.g，並確保 server 參數正確
       vim.g.opencode_opts = {
-        port = 8299,
-        -- 不在 Neovim 內開啟 opencode 終端，
-        -- 改為連線到外部終端執行的 opencode（請使用 :OpencodeStart 啟動）
         server = {
-          start  = function() end,
-          stop   = function() end,
-          toggle = function() end,
+          port = port, -- 告訴插件連線到哪個 Port
+
+          -- 使用計算好的 cmd 啟動
+          start = function()
+            require('snacks.terminal').open(opencode_cmd, snacks_terminal_opts)
+          end,
+          stop = function()
+            -- 確保關閉時是用正確的 cmd 找回 terminal 實例
+            local term = require('snacks.terminal').get(opencode_cmd, snacks_terminal_opts)
+            if term then term:close() end
+          end,
+          toggle = function()
+            require('snacks.terminal').toggle(opencode_cmd, snacks_terminal_opts)
+          end,
         },
       }
     end,
