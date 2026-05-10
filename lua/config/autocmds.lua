@@ -25,7 +25,15 @@ augroup('TrimWhitespace', { clear = true })
 autocmd('BufWritePre', {
   group = 'TrimWhitespace',
   pattern = '*',
-  command = ":%s/\\s\\+$//e"
+  callback = function(args)
+    if vim.bo[args.buf].buftype ~= '' or not vim.bo[args.buf].modifiable then
+      return
+    end
+
+    local view = vim.fn.winsaveview()
+    vim.cmd([[silent! keeppatterns %s/\s\+$//e]])
+    vim.fn.winrestview(view)
+  end,
 })
 
 -- Don't auto commenting new lines
