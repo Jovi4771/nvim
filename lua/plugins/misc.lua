@@ -31,7 +31,7 @@ return {
     "notjedi/nvim-rooter.lua",
     opts = {
       --rooter_patterns   = { '.cache', '.setting', '.svn', '.git', '.root' }, -- root
-      rooter_patterns   = { '.root' }, -- root
+      rooter_patterns   = { '.root', '.git' },
       trigger_patterns = { "*" },
       manual            = false,
     },
