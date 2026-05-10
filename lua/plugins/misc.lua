@@ -10,7 +10,7 @@ return {
     event = "VeryLazy",
     init = function()
       vim.opt.timeout = true
-      vim.opt.timeoutlen = 300
+      -- timeoutlen 統一在 config/options.lua 設定
     end,
     opts = {
       triggers = {}, -- 註解此行以啟用自動彈出 which-key popup
@@ -32,7 +32,7 @@ return {
     opts = {
       --rooter_patterns   = { '.cache', '.setting', '.svn', '.git', '.root' }, -- root
       rooter_patterns   = { '.root' }, -- root
-      trigger_partterns = { "*" },
+      trigger_patterns = { "*" },
       manual            = false,
     },
   },

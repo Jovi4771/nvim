@@ -17,9 +17,9 @@ function M.default_guifont()
   if M.is_win then
     return "Consolas:h12"
   elseif M.is_mac then
-    return "Menlo:h13"
+    return "Menlo:h18"
   else
-    return "monospace:h12"
+    return "monospace:h18"
   end
 end
 

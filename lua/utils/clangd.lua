@@ -42,12 +42,12 @@ local sep = (function()
   end
 end)()
 
-function my_split(inputstr, sep)
-  if sep == nil then
-    sep = "%s"
+local function split(inputstr, delimiter)
+  if delimiter == nil then
+    delimiter = "%s"
   end
-  local t={}
-  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+  local t = {}
+  for str in string.gmatch(inputstr, "([^"..delimiter.."]+)") do
     table.insert(t, str)
   end
   return t
@@ -81,7 +81,7 @@ local function parse_source(root)
           end
 
           -- trim sub path one by one
-          local split_element_all = my_split(rel_dir, sep)
+          local split_element_all = split(rel_dir, sep)
           local new_path = rel_dir
           while #split_element_all > 1 do
             local split_path = table.remove(split_element_all)

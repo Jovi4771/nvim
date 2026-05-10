@@ -185,7 +185,7 @@ return {
       dashboard.section.footer.val = function()
         local version = vim.version()
         local plugins_text =
-        "          Neovim (" .. version.major .. '.' .. version.minor .. '.' .. version.patch .. ") Powered by LazyVim ...  "
+        "          Neovim (" .. version.major .. '.' .. version.minor .. '.' .. version.patch .. ") Powered by lazy.nvim ...  "
         local fortune = require("alpha.fortune")()
         vim.g.my_quote = table.concat(fortune, '\n')
         return plugins_text .. '\n' .. vim.g.my_quote

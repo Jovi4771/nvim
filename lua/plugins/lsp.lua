@@ -37,6 +37,76 @@ return {
     end,
 
     config = function()
+      -- disable log
+      -- Levels by name: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"
+      vim.lsp.log.set_level("OFF")
+
+      -- Hide all semantic highlights
+      for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
+        vim.api.nvim_set_hl(0, group, {})
+      end
+
+      -- 全域禁用內建 Tag，防止沒 LSP 時按到噴紅字 (E433)
+      vim.keymap.set('n', '<C-]>', '<nop>')
+
+      -- 設定 LSP Attach 自動指令
+      local fidget_ok, fidget = pcall(require, "fidget")
+
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+        callback = function(ev)
+          local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+          if client and client.server_capabilities.definitionProvider then
+            vim.keymap.set('n', '<C-]>', function()
+              local word = vim.fn.expand('<cword>')
+
+              if fidget_ok then
+                local handle = fidget.progress.handle.create({
+                  title = "LSP Searching...",
+                  message = "Finding definition of '" .. word .. "'",
+                  lsp_client = { name = client.name },
+                })
+
+                local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+
+                client.request('textDocument/definition', params, function(err, result, ctx, _)
+                  handle:finish()
+
+                  if err then
+                    fidget.notify("LSP Error: " .. err.message, vim.log.levels.ERROR)
+                    return
+                  end
+
+                  if not result or vim.tbl_isempty(result) then
+                    fidget.notify("No definition found for '" .. word .. "'", vim.log.levels.WARN)
+                    return
+                  end
+
+                  local location = vim.islist(result) and result[1] or result
+                  vim.lsp.util.show_document(location, client.offset_encoding, { focus = true })
+                end, ev.buf)
+              else
+                local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+                client.request('textDocument/definition', params, function(err, result, _, _)
+                  if err then
+                    vim.notify("LSP Error: " .. err.message, vim.log.levels.ERROR)
+                    return
+                  end
+                  if not result or vim.tbl_isempty(result) then
+                    vim.notify("No definition found for '" .. word .. "'", vim.log.levels.WARN)
+                    return
+                  end
+                  local location = vim.islist(result) and result[1] or result
+                  vim.lsp.util.show_document(location, client.offset_encoding, { focus = true })
+                end, ev.buf)
+              end
+            end, { buffer = ev.buf, desc = "LSP Jump (English UI)" })
+          end
+        end,
+      })
+
+      -- Diagnostic hover on CursorHold
       vim.api.nvim_create_autocmd("CursorHold", {
         group = vim.api.nvim_create_augroup("LspDiagnosticHover", { clear = true }),
         callback = function()
