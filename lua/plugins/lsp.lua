@@ -135,8 +135,20 @@ return {
   {
     "kurama622/clean-diagnostic",
     event = "LspAttach",
+    init = function()
+      vim.diagnostic.config({
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = "❌",
+            [vim.diagnostic.severity.WARN] = "⚠️",
+            [vim.diagnostic.severity.INFO] = "ℹ️",
+            [vim.diagnostic.severity.HINT] = "💡",
+          },
+        },
+      })
+    end,
     opts = {
-      sign_text = {
+      icons = {
         "❌",   -- error  🔴
         "⚠️",   -- warn   🟠
         "ℹ️",   -- info   🔵
