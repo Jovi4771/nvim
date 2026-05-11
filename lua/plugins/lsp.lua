@@ -41,6 +41,31 @@ return {
       -- Levels by name: "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"
       vim.lsp.log.set_level("OFF")
 
+      -- clangd diagnostic filter
+      local ignored_clangd_diagnostics = {
+        -- ["-Wunused-variable"] = true,
+        -- ["clang-diagnostic-unused-variable"] = true,
+        -- ["readability-magic-numbers"] = true,
+      }
+
+      local publish_diagnostics = vim.lsp.handlers["textDocument/publishDiagnostics"]
+      vim.lsp.handlers["textDocument/publishDiagnostics"] = function(err, result, ctx, config)
+        local client = vim.lsp.get_client_by_id(ctx.client_id)
+
+        if client and client.name == "clangd" and result and result.diagnostics then
+          result.diagnostics = vim.tbl_filter(function(diagnostic)
+            local code = diagnostic.code
+            if type(code) == "table" then
+              code = code.value
+            end
+
+            return not ignored_clangd_diagnostics[code]
+          end, result.diagnostics)
+        end
+
+        return publish_diagnostics(err, result, ctx, config)
+      end
+
       -- Hide all semantic highlights
       for _, group in ipairs(vim.fn.getcompletion("@lsp", "highlight")) do
         vim.api.nvim_set_hl(0, group, {})
