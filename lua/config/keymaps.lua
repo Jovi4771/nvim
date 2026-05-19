@@ -34,6 +34,7 @@ map('n', '<C-.>',     '<C-w>5>', { desc = 'Resize window right' })
 map('n', '<C-,>',     '<C-w>5<', { desc = 'Resize window left' })
 map('n', '<A-Up>',    '<C-w>3+', { desc = 'Resize window up' })
 map('n', '<A-Down>',  '<C-w>3-', { desc = 'Resize window down' })
+vim.keymap.set('x', 'g<C-a>', 'g<C-a>', { remap = false, desc = "連續遞增數字" })
 
 -- 系統剪貼簿（跨平台：Win 用 *、macOS / Linux 用 +）
 local platform = require('utils.platform')

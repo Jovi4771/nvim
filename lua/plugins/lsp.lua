@@ -46,6 +46,8 @@ return {
         -- ["-Wunused-variable"] = true,
         -- ["clang-diagnostic-unused-variable"] = true,
         -- ["readability-magic-numbers"] = true,
+        ["unused-includes"] = true,
+        --["-Wimplicit-function-declaration"] = true,
       }
 
       local publish_diagnostics = vim.lsp.handlers["textDocument/publishDiagnostics"]
