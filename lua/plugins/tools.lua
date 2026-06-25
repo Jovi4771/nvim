@@ -130,4 +130,32 @@ return {
       vim.g.VM_case_setting = "sensitive"
     end,
   },
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false,      -- 啟動時加載
+    preview = {
+        icon_provider = "internal", -- "mini" or "devicons"
+    }
+  },
+  --{
+  --  'MeanderingProgrammer/render-markdown.nvim',
+  --  lazy = false,      -- 啟動時加載
+  --  --dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' },            -- if you use the mini.nvim suite
+  --  --dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+  --  dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+  --  ---@module 'render-markdown'
+  --  ---@type render.md.UserConfig
+  --  opts = {},
+  --}
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    -- 在 Windows 系統下，使用 npm install 進行本地編譯
+    build = "cd app && npm install",
+    init = function()
+      -- 設定支援的檔案類型
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+  },
 }

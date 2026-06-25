@@ -48,6 +48,7 @@ return {
         -- ["readability-magic-numbers"] = true,
         ["unused-includes"] = true,
         --["-Wimplicit-function-declaration"] = true,
+        ["fe_expected_compiler_job"] = true,
       }
 
       local publish_diagnostics = vim.lsp.handlers["textDocument/publishDiagnostics"]
