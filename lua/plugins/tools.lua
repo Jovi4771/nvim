@@ -135,7 +135,13 @@ return {
     lazy = false,      -- 啟動時加載
     preview = {
         icon_provider = "internal", -- "mini" or "devicons"
-    }
+    },
+    -- 使用 init 函式，在 Neovim 啟動時立即註冊自訂指令
+    init = function()
+      vim.api.nvim_create_user_command("MarkviewSplit", function()
+        vim.cmd("Markview splitToggle")
+      end, { desc = "切換 Markdown 雙欄分屏預覽" })
+    end,
   },
   --{
   --  'MeanderingProgrammer/render-markdown.nvim',

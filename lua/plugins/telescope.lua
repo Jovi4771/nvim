@@ -76,7 +76,7 @@ return {
             "%.project",
             "%.cproject",
             "dist",
-            "output",
+            "output/",
             "Debug",
             "compile_commands.json",
             "compile_flags.txt"
