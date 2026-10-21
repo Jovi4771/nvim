@@ -32,9 +32,29 @@ return {
     opts = {
       --rooter_patterns  = { '.cache', '.setting', '.svn', '.git', '.root' }, -- root
       rooter_patterns  = { '.root' },
-      trigger_patterns = { "*" },
-      manual           = false,
+      -- 停用上游的 BufEnter：其 activate() 用 string.format 把 buffer 名稱
+      -- 塞進 nvim_eval，名稱含 " 時（例如 opencode 的 term:// 指令）會噴 E488。
+      -- 改用下方自訂的 autocmd，只呼叫不會碰 nvim_eval 的 get_root()。
+      manual           = true,
     },
+    config = function(_, opts)
+      local rooter = require("nvim-rooter")
+      rooter.setup(opts)
+
+      vim.api.nvim_create_autocmd("BufEnter", {
+        group = vim.api.nvim_create_augroup("RooterSafe", { clear = true }),
+        callback = function(args)
+          -- 只處理真實檔案 buffer，終端/qf/nofile 一律跳過
+          if vim.bo[args.buf].buftype ~= "" then return end
+
+          local ok, root = pcall(rooter.get_root)
+          if not ok or not root then return end
+          if vim.fn.getcwd() ~= root then
+            vim.api.nvim_set_current_dir(root)
+          end
+        end,
+      })
+    end,
   },
 
   -- font size (gui)
