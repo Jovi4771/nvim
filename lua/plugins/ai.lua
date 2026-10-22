@@ -129,14 +129,24 @@ local function posix_session_command(cwd, password_file)
   end
 
   local create_body = '{"title":' .. vim.fn.json_encode(opencode_session_title) .. '}'
-  return string.format(
-    "%s%sopencode serve --hostname 127.0.0.1 --port %d >/dev/null 2>&1 & server_pid=$!; " ..
+
+  -- 已有 server 就沿用：split TUI 重開時該 port 已被佔用，重跑 serve 會失敗。
+  -- 只有自己啟動的 server 才在結束時負責收拾。
+  local serve_command = string.format(
+    "if ! curl -sS --max-time 1 --user \"$auth\" -o /dev/null \"$url/api/info\"; then " ..
+      "opencode serve --hostname 127.0.0.1 --port %d >/dev/null 2>&1 & server_pid=$!; " ..
       "trap 'kill \"$server_pid\" 2>/dev/null || true' EXIT; " ..
-      "url='%s'; auth=\"${OPENCODE_SERVER_USERNAME:-opencode}:$OPENCODE_PASSWORD\"; ready=0; attempt=0; " ..
+      "ready=0; attempt=0; " ..
       "while [ \"$attempt\" -lt 50 ]; do " ..
       "if curl -sS --max-time 1 --user \"$auth\" -o /dev/null \"$url/api/info\"; then ready=1; break; fi; " ..
       "attempt=$((attempt + 1)); sleep 0.2; done; " ..
       "if [ \"$ready\" -ne 1 ]; then echo 'OpenCode server did not start'; exit 1; fi; " ..
+      "fi; ",
+    port
+  )
+
+  return string.format(
+    "%s%surl='%s'; auth=\"${OPENCODE_SERVER_USERNAME:-opencode}:$OPENCODE_PASSWORD\"; %s" ..
       "session_file=%s; session_id=''; " ..
       "if [ -s \"$session_file\" ]; then session_id=$(tr -d '\\r\\n' < \"$session_file\"); fi; " ..
       "if [ -n \"$session_id\" ] && ! curl -sS --max-time 2 --fail --user \"$auth\" -o /dev/null \"$url/api/session/$session_id\"; then session_id=''; fi; " ..
@@ -149,8 +159,8 @@ local function posix_session_command(cwd, password_file)
       "opencode --server \"$url\" --session \"$session_id\"",
     cd_command,
     password_command,
-    port,
     opencode_url,
+    serve_command,
     shell_quote(opencode_session_file),
     shell_quote(create_body)
   )
@@ -166,22 +176,33 @@ $server = $null
 try {
   Set-Location -LiteralPath $WorkingDirectory
   $url = "http://127.0.0.1:$Port"
-  $server = Start-Process -FilePath "cmd.exe" -ArgumentList "/c opencode serve --hostname 127.0.0.1 --port $Port" -WorkingDirectory $WorkingDirectory -WindowStyle Hidden -PassThru
   $username = $env:OPENCODE_SERVER_USERNAME
   if ([string]::IsNullOrEmpty($username)) { $username = "opencode" }
   $auth = "Basic " + [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("${username}:$($env:OPENCODE_PASSWORD)"))
   $headers = @{ Authorization = $auth; "x-opencode-directory" = $WorkingDirectory }
-  $ready = $false
-  for ($attempt = 0; $attempt -lt 50; $attempt++) {
-    try {
-      Invoke-WebRequest -Uri "$url/api/info" -Headers $headers -UseBasicParsing -TimeoutSec 2 | Out-Null
-      $ready = $true
-      break
-    } catch {
-      Start-Sleep -Milliseconds 200
+
+  # 已有 server 就沿用：split TUI 重開時 port 已被佔用，重跑 serve 會失敗。
+  # 沿用時不擁有 server，所以 finally 不應該殺它。
+  $reuse = $false
+  try {
+    Invoke-WebRequest -Uri "$url/api/info" -Headers $headers -UseBasicParsing -TimeoutSec 2 | Out-Null
+    $reuse = $true
+  } catch { }
+
+  if (-not $reuse) {
+    $server = Start-Process -FilePath "cmd.exe" -ArgumentList "/c opencode serve --hostname 127.0.0.1 --port $Port" -WorkingDirectory $WorkingDirectory -WindowStyle Hidden -PassThru
+    $ready = $false
+    for ($attempt = 0; $attempt -lt 50; $attempt++) {
+      try {
+        Invoke-WebRequest -Uri "$url/api/info" -Headers $headers -UseBasicParsing -TimeoutSec 2 | Out-Null
+        $ready = $true
+        break
+      } catch {
+        Start-Sleep -Milliseconds 200
+      }
     }
+    if (-not $ready) { throw "OpenCode server did not start on port $Port" }
   }
-  if (-not $ready) { throw "OpenCode server did not start on port $Port" }
   $sessionID = $null
   if (Test-Path -LiteralPath $SessionFile) {
     $sessionContent = Get-Content -LiteralPath $SessionFile -Raw -ErrorAction SilentlyContinue
@@ -272,6 +293,78 @@ local function probe_opencode(url)
 
     if job <= 0 then resolve({ code = job, status = "000" }) end
   end)
+end
+
+-- OpenCode 沒有查詢 client 的 API，只能看行程表判斷是否已有 TUI 掛在這個 server。
+-- server 的 cmdline 是 `opencode serve --hostname 127.0.0.1 --port N`；
+-- TUI 則是 `opencode --server http://127.0.0.1:N --session ses_...`。
+local tui_probe_cache = { at = 0, running = false }
+local TUI_PROBE_TTL_MS = 2000
+
+local function probe_tui()
+  local Promise = require("opencode.promise")
+  local platform = require("utils.platform")
+  local needle = "--server " .. opencode_url
+
+  return Promise.new(function(resolve)
+    local cmd
+    if platform.is_win then
+      -- 只比對 opencode.exe，避免把這個查詢指令自己也算進去。
+      cmd = {
+        "powershell",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        string.format(
+          "Get-CimInstance Win32_Process -Filter \"Name='opencode.exe'\" | "
+            .. "Where-Object { $_.CommandLine -like '*%s*' -and $_.CommandLine -notlike '* serve *' } | "
+            .. "ForEach-Object { $_.ProcessId }",
+          needle
+        ),
+      }
+    else
+      cmd = { "ps", "-Ao", "args=" }
+    end
+
+    local lines = {}
+    local function finish(running)
+      tui_probe_cache = { at = uv.now(), running = running }
+      resolve(running)
+    end
+
+    local job = vim.fn.jobstart(cmd, {
+      stdout_buffered = true,
+      on_stdout = function(_, data)
+        if data then lines = data end
+      end,
+      on_exit = function(_, code)
+        if code ~= 0 then return finish(false) end
+
+        if platform.is_win then
+          for _, line in ipairs(lines) do
+            if vim.trim(line) ~= "" then return finish(true) end
+          end
+          return finish(false)
+        end
+
+        for _, line in ipairs(lines) do
+          if line:find(needle, 1, true) and not line:find("serve", 1, true) then
+            return finish(true)
+          end
+        end
+        finish(false)
+      end,
+    })
+
+    if job <= 0 then finish(false) end
+  end)
+end
+
+local function tui_running()
+  if uv.now() - tui_probe_cache.at < TUI_PROBE_TTL_MS then
+    return require("opencode.promise").resolve(tui_probe_cache.running)
+  end
+  return probe_tui()
 end
 
 local function ensure_opencode_session(server)
@@ -417,9 +510,27 @@ local function resolve_opencode_server()
     end)
   end
 
+  -- server 活著不代表有 TUI 在看（上一個 TUI 關掉後 server 可能變孤兒），
+  -- 這種情況仍要在 Neovim 內開 split TUI。
+  local function ensure_tui()
+    return tui_running():next(function(running)
+      if running then return true end
+
+      local start = server_opts.start
+      if type(start) ~= "function" then return false end
+
+      local ok, start_err = pcall(start)
+      if not ok then
+        vim.notify("OpenCode TUI 啟動失敗：" .. tostring(start_err), vim.log.levels.WARN, { title = "opencode" })
+        return false
+      end
+      return true
+    end)
+  end
+
   local pending = probe_opencode(opencode_url):next(function(result)
     if result.code == 0 and result.status == "200" then
-      return connect_opencode()
+      return ensure_tui():next(function() return connect_opencode() end)
     end
 
     if result.code == 0 and result.status ~= "000" and result.status ~= "" then
