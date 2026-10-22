@@ -321,7 +321,15 @@ local function ensure_opencode_session(server)
       return Promise.reject("OpenCode session 建立失敗")
     end
     opencode_session = session
-    return session
+
+    -- 全域 default_agent 是 plan；從 nvim 開啟時固定改用 build agent。
+    -- 只在首次 pin 時執行，之後使用者在 TUI 手動切的 agent 不會被蓋掉；
+    -- 切換失敗不影響 session 繼續使用。
+    return server:request("/api/session/" .. session.id .. "/agent", "POST", { agent = "build" })
+      :catch(function() end)
+      :next(function()
+        return session
+      end)
   end
 
   local function use_existing_or_create()
